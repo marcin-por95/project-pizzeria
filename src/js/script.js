@@ -66,8 +66,10 @@
     }
     rednderInMenu() {
       const thisProduct = this ;
-      /* generate html based on template*/
+      /* [Done] generate html based on template*/
       const generatedHTML = templates.menuProduct(thisProduct.data);
+      /*create element using utils.createDOMFromHTML */
+      thisProduct.element = utils.createDOMFromHTML(generatedHTML);
     }
   }
   const app = {
