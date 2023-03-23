@@ -52,10 +52,22 @@
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
-  class Product{
-    constructor(){
+  class Product {
+    constructor(id, data) {
       const thisProduct = this;
+
+      thisProduct.id = id;
+      thisProduct.data = data;
+
+      thisProduct.rednderInMenu();
+      thisProduct.initAccordion();
+
       console.log('new Product:', thisProduct);
+    }
+    rednderInMenu() {
+      const thisProduct = this ;
+      /* generate html based on template*/
+      const generatedHTML = templates.menuProduct(thisProduct.data);
     }
   }
   const app = {
