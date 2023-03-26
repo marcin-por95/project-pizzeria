@@ -50,7 +50,7 @@
 
   const templates = {
     menuProduct: Handlebars.compile(
-        document.querySelector(select.templateOf.menuProduct).innerHTML),
+      document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
   class Product {
@@ -88,29 +88,25 @@
         event.preventDefault();
         /* find active product (product that has active class) */
         const activeProduct = document.querySelector(
-            select.all.menuProductsActive);
+          select.all.menuProductsActive);
         /* if there is active product and it's not thisProduct.element, remove class active from it */
         if (activeProduct !== null && activeProduct !== thisProduct.element) {
           activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
         /* toggle active class on thisProduct.element */
         thisProduct.element.classList.toggle(
-            classNames.menuProduct.wrapperActive);
+          classNames.menuProduct.wrapperActive);
       });
     }
 
     getElements() {
       const thisProduct = this;
-      thisProduct.accordionTrigger = thisProduct.element.querySelector(
-          select.menuProduct.clickable);
-      thisProduct.form = thisProduct.element.querySelector(
-          select.menuProduct.form);
-      thisProduct.formInputs = thisProduct.form.querySelectorAll(
-          select.all.formInputs);
-      thisProduct.cartButton = thisProduct.element.querySelector(
-          select.menuProduct.cartButton);
-      thisProduct.priceElem = thisProduct.element.querySelector(
-          select.menuProduct.priceElem);
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
 
     initOrderForm() {
@@ -158,6 +154,8 @@
             if (option.default !== true) {
               // wiemy już, że nie jesteśmy opcją domyślną, i że jesteśmy opcją zaznaczoną, więc musimy dodać swoją cenę do ceny początkowej produktu
               price += option.price;
+
+              
             }
             // ukryty "else", gdzie jesteśmy opcją zaznaczoną, ale jesteśmy opcją domyślną więc nie zmieniamy ceny poczatkowej produktu
           }
@@ -170,13 +168,29 @@
             */
             price -= option.price;
           }
+        
+      
+          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+          
+          if(optionImage){
+            if(paramId) {
+              // add class active to image
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
+            }
+            else {
+              optionImage.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
         }
+      
       }
-      // cena początkowa została zmieniona w toku pracy algorytymu, więc teraz wystarczy ją podmienić w HTML czyli wyświetlić
+      // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
+      //console.log('processOrder:', thisProduct);
     }
   }
 
+      
   const app = {
     initData: function () {
       const thisApp = this;
