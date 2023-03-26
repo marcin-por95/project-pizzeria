@@ -36,7 +36,7 @@ dataSource.products = {
     price: 20,
     description: 'The true taste of Italy &ndash; homemade pizza as prepared by our grandmothers in old-fashoned brick ovens. Choose your favorite topping and enjoy your comfort food! All ingredients come straight from eco-friendly, trusted farms in the Italian countryside.',
     images: [
-      '<img class="active" src="images/pizza/crust.svg">',
+      '<img class="active dough" src="images/pizza/crust.svg">',
       '<img class="active sauce-tomato" src="images/pizza/tomato-sauce.svg">',
       '<img class="active sauce-cream" src="images/pizza/sour-cream.svg">',
       '<img class="active toppings-salami" src="images/pizza/salami.svg">',

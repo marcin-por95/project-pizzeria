@@ -16,6 +16,7 @@
     font-size: 22px;
     cursor: pointer;
   }
+  
 
   &__name {
     position: relative;
@@ -78,7 +79,12 @@
     height: 350px;
     opacity: 0;
     transition: opacity 200ms;
+     
+    .dough {
+      width: 330px;
+    }
 
+   
     &.small {
       width: 220px;
       height: 220px;
