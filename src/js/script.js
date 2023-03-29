@@ -172,18 +172,13 @@
       
           const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
           
-          if(optionImage){
-            if(paramId) {
-              // add class active to image
-              optionImage.classList.add(classNames.menuProduct.imageVisible);
-            }
-            else {
-              optionImage.classList.remove(classNames.menuProduct.imageVisible);
-            }
+          const img = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+          if (formData[paramId].includes(optionId) && img){
+            img.classList.add(classNames.menuProduct.imageVisible);
           }
-        }
-      
-      }
+          else if (formData[paramId].includes(optionId) == false && img){
+            img.classList.remove(classNames.menuProduct.imageVisible);
+          }
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
       //console.log('processOrder:', thisProduct);
