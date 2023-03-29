@@ -1,8 +1,6 @@
 /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
-
 {
   'use strict';
-
   const select = {
     templateOf: {
       menuProduct: '#template-menu-product',
@@ -32,14 +30,12 @@
       },
     },
   };
-
   const classNames = {
     menuProduct: {
       wrapperActive: 'active',
       imageVisible: 'active',
     },
   };
-
   const settings = {
     amountWidget: {
       defaultValue: 1,
@@ -47,19 +43,15 @@
       defaultMax: 9,
     }
   };
-
   const templates = {
     menuProduct: Handlebars.compile(
       document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
-
   class Product {
     constructor(id, data) {
       const thisProduct = this;
-
       thisProduct.id = id;
       thisProduct.data = data;
-
       thisProduct.renderInMenu();
       thisProduct.getElements();
       thisProduct.initAccordion();
@@ -67,7 +59,6 @@
       thisProduct.processOrder();
       console.log('new Product:', thisProduct);
     }
-
     renderInMenu() {
       const thisProduct = this;
       /* [Done] generate html based on template*/
@@ -79,7 +70,6 @@
       /* [DONE] add element to menu*/
       menuContainer.appendChild(thisProduct.element);
     }
-
     initAccordion() {
       const thisProduct = this;
       /* START: add event listener to clickable trigger on event click */
@@ -98,7 +88,6 @@
           classNames.menuProduct.wrapperActive);
       });
     }
-
     getElements() {
       const thisProduct = this;
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
@@ -108,7 +97,6 @@
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
-
     initOrderForm() {
       const thisProduct = this;
       console.log("initOrderForm()")
@@ -125,9 +113,7 @@
         event.preventDefault();
         thisProduct.processOrder();
       })
-
     }
-
     processOrder() {
       const thisProduct = this;
       // aktualnie zaznaczone opcje w formularzach
@@ -154,7 +140,6 @@
             if (option.default !== true) {
               // wiemy już, że nie jesteśmy opcją domyślną, i że jesteśmy opcją zaznaczoną, więc musimy dodać swoją cenę do ceny początkowej produktu
               price += option.price;
-
               
             }
             // ukryty "else", gdzie jesteśmy opcją zaznaczoną, ale jesteśmy opcją domyślną więc nie zmieniamy ceny poczatkowej produktu
@@ -169,19 +154,23 @@
             price -= option.price;
           }
         
-      
-          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
-          
-          const img = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
-          if (formData[paramId].includes(optionId) && img){
-            img.classList.add(classNames.menuProduct.imageVisible);
-          }
-          else if (formData[paramId].includes(optionId) == false && img){
-            img.classList.remove(classNames.menuProduct.imageVisible);
-          }
-      // update calculated price in the HTML
-      thisProduct.priceElem.innerHTML = price;
-      //console.log('processOrder:', thisProduct);
+
+           const img = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+
+           if (formData[paramId].includes(optionId) && img){
+             img.classList.add(classNames.menuProduct.imageVisible);
+           }
+           else if (formData[paramId].includes(optionId) == false && img){
+             img.classList.remove(classNames.menuProduct.imageVisible);
+             }
+           }
+         }
+
+       
+       // update calculated price in the HTML
+       thisProduct.priceElem.innerHTML = price;
+       //console.log('processOrder:', thisProduct);
+
     }
   }
 
@@ -189,19 +178,15 @@
   const app = {
     initData: function () {
       const thisApp = this;
-
       thisApp.data = dataSource;
     },
     initMenu: function () {
       const thisApp = this;
       console.log('thisApp.data:', thisApp.data);
-
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
-
     },
-
     init: function () {
       const thisApp = this;
       console.log('*** App starting ***');
@@ -209,11 +194,9 @@
       console.log('classNames:', classNames);
       console.log('settings:', settings);
       console.log('templates:', templates);
-
       thisApp.initData();
       thisApp.initMenu();
     },
   };
-
   app.init();
 }
