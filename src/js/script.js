@@ -39,8 +39,8 @@
   const settings = {
     amountWidget: {
       defaultValue: 1,
-      defaultMin: 1,
-      defaultMax: 9,
+      defaultMin: 0,
+      defaultMax: 10,
     }
   };
   const templates = {
@@ -153,6 +153,7 @@
              więc powinniśmy odjąć swoją cenę od ceny początkowej
             */
             price -= option.price;
+            
           }
 
 
@@ -165,22 +166,19 @@
             img.classList.remove(classNames.menuProduct.imageVisible);
           }
         }
+      
       }
-
-
+        price *= thisProduct.amountWidget.value;
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
       //console.log('processOrder:', thisProduct);
 
     }
-
-  
-
   initAmountWidget(){
     const thisProduct = this;
 
     thisProduct.amountWidget = new AmoundWidget (thisProduct.amountWidgetElem);
-   // console.log('to przekacujemy', thisProduct.amountWidgetElem);
+    thisProduct.amountWidgetElem.addEventListener('updated', function(){thisProduct.processOrder();});
   }
 }
 
@@ -200,24 +198,22 @@ class AmoundWidget {
     const thisWidget = this;
 
     thisWidget.element = element;
+    thisWidget.value = settings.amountWidget.defaultValue;
     thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
     thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
     thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
   }
   setValue(value){
     const thisWidget = this;
-
     const newValue = parseInt(value);
-
     /*TODO Add validation */
+     thisWidget.value !== newValue && !isNaN(newValue) &&
+     newValue >= settings.amountWidget.defaultMin &&
+     newValue <= settings.amountWidget.defaultMax ? thisWidget.value = newValue : false;
+     thisWidget.input.value = thisWidget.value;
+     thisWidget.announce();
 
-    thisWidget.value !== newValue && !isNaN(newValue) &&
-    newValue >= settings.amountWidget.defaultMin && 
-    newValue <= settings.amountWidget.defaultMax  
-    thisWidget.value = newValue : false;
-
-    thisWidget.input.value = thisWidget.value;
-  }
+   }
   initActions(){
     const thisWidget = this;
 
@@ -232,7 +228,12 @@ class AmoundWidget {
       event.preventDefault();
       thisWidget.setValue(++thisWidget.input.value);
     });
+  }
+  announce(){
+    const thisWidget = this;
 
+    const event = new Event('updated');
+    thisWidget.element.dispatchEvent(event);
   }
 }
 
