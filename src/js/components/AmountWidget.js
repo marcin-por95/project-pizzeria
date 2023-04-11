@@ -1,4 +1,4 @@
-import {select, settings} from './settings';
+import {select, settings} from '../settings.js';
 
 export default class AmountWidget {
   constructor(element) {

@@ -1,9 +1,9 @@
 
-import CartProduct from './CartProduct';
+import CartProduct from './CartProduct.js';
 
-import utils from '../utils';
+import utils from '../utils.js';
 
-import {select, settings, templates} from './settings';
+import {select, settings, templates} from '../settings.js';
 
 
 export default class Cart {
