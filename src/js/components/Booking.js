@@ -1,12 +1,12 @@
 import {select, templates} from '../settings.js';
-import AmountWidget from './AmountWidget';
+import AmountWidget from './AmountWidget.js';
 
-export default class Booking{
+export default class Booking {
 
 
   constructor(element) {
-  this.render(element);
-  this.initWidgets();
+    this.render(element);
+    this.initWidgets();
   }
 
   initWidgets() {
@@ -15,8 +15,10 @@ export default class Booking{
     this.peopleAmountWidget = new AmountWidget(this.dom.peopleAmount);
     this.hoursAmountWidget = new AmountWidget(this.dom.hoursAmount);
 
-    this.dom.hoursAmount.addEventListener('update', () => {} );
-    this.dom.peopleAmount.addEventListener('update', () => {});
+    this.dom.hoursAmount.addEventListener('update', () => {
+    });
+    this.dom.peopleAmount.addEventListener('update', () => {
+    });
 
 
   }
