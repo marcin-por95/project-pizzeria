@@ -54,7 +54,7 @@ export default class Cart {
   
     /* create DOM element using utils.createElementFromHTML */
     const generatedDOM = utils.createDOMFromHTML(generatedHTML);
-  
+
   
     /* find menu container */
     const cartContainer = thisCart.dom.productList;
@@ -75,6 +75,7 @@ export default class Cart {
     thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
     let totalNumber = 0;
     let subtotalPrice = 0;
+
   
     //delete delivery fee if cart is empty
     if (thisCart.products.length === 0) {
@@ -103,7 +104,7 @@ export default class Cart {
     const thisCart = this;
     //remove product from HTML
     product.dom.wrapper.remove();
-    //delete informations from thisCart.products
+
     const indexOfProduct = thisCart.products.indexOf(product);
     thisCart.products.splice(indexOfProduct, 1);
     //  console.log('after removed',thisCart);
@@ -114,4 +115,5 @@ export default class Cart {
   
     // console.log('after updating', thisCart);
   }
+
 }

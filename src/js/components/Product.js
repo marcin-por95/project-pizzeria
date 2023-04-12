@@ -119,7 +119,7 @@ export default class Product {
         if (formData[paramId].includes(optionId) && option.default) {
           price = price + option['price'];
         }
-        else if (formData[paramId].includes(optionId) == false && !option.default) {
+        else if (formData[paramId].includes(optionId) === false && !option.default) {
           price = price - option['price'];
         }
 
