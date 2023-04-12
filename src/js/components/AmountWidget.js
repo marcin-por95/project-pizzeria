@@ -23,18 +23,20 @@ export default class AmountWidget {
   }
   setValue(value) {
     const thisWidget = this;
-  
     const newValue = parseInt(value);
-  
-    /*TODO Add validation */
-  
-    thisWidget.value !== newValue && !isNaN(newValue) &&
-        newValue >= settings.amountWidget.defaultMin &&
-        newValue <= settings.amountWidget.defaultMax ? thisWidget.value = newValue : false;
-    thisWidget.input.value = thisWidget.value;
+    /* TODO: add validation */
+    if(thisWidget.value !== newValue && !isNaN(newValue)) {
+      if (newValue >= settings.amountWidget.defaultMin){
+        if (newValue <= settings.amountWidget.defaultMax){
+          thisWidget.value = newValue;
+        }
+      }
+    }
     thisWidget.announce();
-  
+    //thisWidget.value = newValue;
+    thisWidget.input.value = thisWidget.value;
   }
+
   initActions() {
     const thisWidget = this;
   

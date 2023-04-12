@@ -42,6 +42,11 @@ const utils = {
     }
 
     console.log(JSON.stringify({ product: productJson, order: [] }, null, '  '));
+  },
+  queryParams: function(params){
+    return Object.keys(params)
+      .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+      .join('&');
   }
 };
 
