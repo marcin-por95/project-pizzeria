@@ -1,10 +1,13 @@
 import {settings, select, classNames} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
+import Booking from './components/Booking.js';
+import {init} from 'browser-sync';
 
 
 
 const app = {
+
   initMenu: function () {
     const thisApp = this;
     // console.log('thisApp.data:', thisApp.data);
@@ -44,6 +47,7 @@ const app = {
     thisApp.initData();
     thisApp.initCart();
     thisApp.initPages();
+    thisApp.initBooking();
 
   },
 
@@ -108,7 +112,7 @@ const app = {
     const thisApp = this;
 
     const widgetContainer = document.querySelector(select.containerOf.booking);
-   // thisApp.booking = new Booking(widgetContainer);
+    thisApp.booking = new Booking(widgetContainer);
   }
 
 };
