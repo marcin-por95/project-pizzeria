@@ -28,10 +28,8 @@ export default class Booking {
     this.dom.wrapper = element;
 
     this.dom.wrapper.innerHTML = templates.bookingWidget();
-    this.dom.peopleAmount = select.booking.peopleAmount;
-    this.dom.hoursAmount = select.booking.hoursAmount;
-
-
+    this.dom.peopleAmount = document.querySelector(select.booking.peopleAmount);
+    this.dom.hoursAmount = document.querySelector(select.booking.hoursAmount);
   }
 }
 
