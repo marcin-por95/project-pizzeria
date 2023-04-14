@@ -1,65 +1,41 @@
-import {select, settings} from '../settings.js';
+import { select, settings } from '../settings.js';
+import BaseWidget from './BaseWidget.js';
 
-export default class AmountWidget {
+export default class AmountWidget extends BaseWidget {
   constructor(element) {
-    const thisWidget = this;
-  
-    // console.log('AmountWidget', thisWidget);
-    // console.log('constructor arguments', element);
-    thisWidget.getElements(element);
-    thisWidget.setValue(thisWidget.input.value);
-    thisWidget.initActions();
-    // console.log(thisWidget.element.querySelector(select.widgets.amount.input));
+    super(element, settings.amountWidget.defaultValue);
+    this.getElements(element);
+    this.initActions();
   }
-  getElements(element) {
-    const thisWidget = this;
-  
-    thisWidget.element = element;
-    thisWidget.value = settings.amountWidget.defaultValue;
-    // console.log(thisWidget.element);
-    thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
-    thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
-    thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+
+  getElements() {
+    this.dom.input = this.dom.wrapper.querySelector(select.widgets.amount.input);
+    this.dom.linkDecrease = this.dom.wrapper.querySelector(select.widgets.amount.linkDecrease);
+    this.dom.linkIncrease = this.dom.wrapper.querySelector(select.widgets.amount.linkIncrease);
   }
-  setValue(value) {
-    const thisWidget = this;
-    const newValue = parseInt(value);
-    /* TODO: add validation */
-    if(thisWidget.value !== newValue && !isNaN(newValue)) {
-      if (newValue >= settings.amountWidget.defaultMin){
-        if (newValue <= settings.amountWidget.defaultMax){
-          thisWidget.value = newValue;
-        }
-      }
-    }
-    thisWidget.announce();
-    //thisWidget.value = newValue;
-    thisWidget.input.value = thisWidget.value;
+
+  isValid(value) {
+    return !isNaN(value)
+      && value >= settings.amountWidget.defaultMin
+      && value <= settings.amountWidget.defaultMax;
+  }
+
+  renderValue() {
+    this.dom.input.value = this.value;
   }
 
   initActions() {
     const thisWidget = this;
-  
-    thisWidget.input.addEventListener('change', function () {
-      thisWidget.setValue(thisWidget.input.value);
+    thisWidget.dom.input.addEventListener('change', function () {
+      thisWidget.value = thisWidget.dom.input.value;
     });
-    thisWidget.linkDecrease.addEventListener('click', function (event) {
+    thisWidget.dom.linkDecrease.addEventListener('click', function (event) {
       event.preventDefault();
-      thisWidget.setValue(--thisWidget.input.value);
+      thisWidget.value = --thisWidget.dom.input.value;
     });
-    thisWidget.linkIncrease.addEventListener('click', function (event) {
+    thisWidget.dom.linkIncrease.addEventListener('click', function (event) {
       event.preventDefault();
-      thisWidget.setValue(++thisWidget.input.value);
+      thisWidget.value = ++thisWidget.dom.input.value;
     });
-  
-  }
-  announce() {
-    const thisWidget = this;
-  
-    const event = new Event('update', {
-      bubbles: true
-    });
-    thisWidget.element.dispatchEvent(event);
   }
 }
-  
