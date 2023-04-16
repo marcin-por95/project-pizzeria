@@ -9,6 +9,7 @@ export default class Booking {
     this.render(element);
     this.initWidgets();
     this.getData();
+
   }
 
   getData() {
@@ -17,56 +18,61 @@ export default class Booking {
 
 
     const params = {
-      booking: [
-        startDateParam,
-        endDateParam,
+      booking: [startDateParam, endDateParam,
 
-      ],
-      eventsCurrent: [
-        settings.db.notRepeatParam,
-        startDateParam,
-        endDateParam,
+      ], eventsCurrent: [settings.db.notRepeatParam, startDateParam, endDateParam,
 
-      ],
-      eventsRepeat: [
-        settings.db.repeatParam,
-        endDateParam,
-
-      ],
+      ], eventsRepeat: [settings.db.repeatParam, endDateParam,],
     };
     // console.log('getData', params);
 
     const urls = {
-      bookings: settings.db.url + '/' + settings.db.booking
-        + '?' + params.booking.join('&'),
-      eventsCurrent: settings.db.url + '/' + settings.db.event
-        + '?' + params.eventsCurrent.join('&'),
-      eventsRepeat: settings.db.url + '/' + settings.db.event
-        + '?' + params.eventsRepeat.join('&'),
+      bookings: settings.db.url + '/' + settings.db.booking + '?' + params.booking.join('&'),
+      eventsCurrent: settings.db.url + '/' + settings.db.event + '?' + params.eventsCurrent.join('&'),
+      eventsRepeat: settings.db.url + '/' + settings.db.event + '?' + params.eventsRepeat.join('&'),
     };
 
     //console.log('getData url',urls);
-    Promise.all([
-      fetch(urls.bookings),
-      fetch(urls.eventsCurrent),
-      fetch(urls.eventsRepeat),
-    ])
+    Promise.all([fetch(urls.bookings), fetch(urls.eventsCurrent), fetch(urls.eventsRepeat),])
       .then(function (allResponses) {
         const bookingsResponse = allResponses[0];
         const eventsCurrentResponse = allResponses[1];
         const eventsRepeatResponse = allResponses[2];
 
-        return  Promise.all([
-          bookingsResponse.json(),
-          eventsCurrentResponse.json(),
-          eventsRepeatResponse.json(),
-        ]);
+        return Promise.all([bookingsResponse.json(), eventsCurrentResponse.json(), eventsRepeatResponse.json(),]);
       })
-      .then(function ([bookings, eventsCurrent, eventsRepeat ]) {
-        console.log(bookings);
-        console.log(eventsCurrent);
-        console.log(eventsRepeat);
+      .then(function ([bookings, eventsCurrent, eventsRepeat]) {
+        // console.log(bookings);
+        //console.log(eventsCurrent);
+        // console.log(eventsRepeat);
+        const booking = new Booking();
+        booking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
+
+  }
+
+  parseData(bookings, eventsCurrent, eventsRepeat) {
+    this.booked = {};
+    for (let item of eventsCurrent) {
+      this.makeBooked(item.date, item.hour, item.duration, item.table);
+    }
+    console.log('this.booked', this.booked);
+  }
+
+  makeBooked(date, hour, duration, table) {
+    this.booked[date][hour].push(table);
+
+    if (typeof this.booked[date] === 'undefined') {
+      this.booked[date] = {};
+    }
+    const startHour = utils.hourToNumber(hour);
+
+    if (typeof this.booked[date][startHour] === 'undefined') {
+      this.booked[date][startHour] = [];
+    }
+
+    this.booked[date][startHour].push(table);
+
   }
 
   initWidgets() {
@@ -82,6 +88,7 @@ export default class Booking {
   }
 
   render(element) {
+
     this.dom = {};
     this.dom.wrapper = element;
     this.dom.wrapper.innerHTML = templates.bookingWidget();
