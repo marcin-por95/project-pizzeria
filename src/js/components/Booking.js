@@ -1,4 +1,4 @@
-import { classNames, select, settings, templates } from '../settings.js';
+import {classNames, select, settings, templates} from '../settings.js';
 import AmountWidget from './AmountWidget.js';
 import HourPicker from './HourPicker.js';
 import DatePicker from './DatePicker.js';
@@ -6,7 +6,7 @@ import utils from '../utils.js';
 
 export default class Booking {
   constructor(element) {
-    this.selectedTables = null;
+    this.selectedTables = [];
     this.render(element);
     this.initWidgets();
     this.getData();
@@ -16,7 +16,6 @@ export default class Booking {
     const thisBooking = this;
     const startDateParam = settings.db.dateStartParamKey + '=' + utils.dateToStr(this.datePicker.minDate);
     const endDateParam = settings.db.dateEndParamKey + '=' + utils.dateToStr(this.datePicker.maxDate);
-
 
     const params = {
       booking: [startDateParam, endDateParam],
@@ -45,7 +44,6 @@ export default class Booking {
         console.log(eventsRepeat);
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
-
   }
 
   parseData(bookings, eventsCurrent, eventsRepeat) {
@@ -102,34 +100,50 @@ export default class Booking {
       } else {
         table.classList.remove(classNames.booking.tableBooked);
       }
+
     }
+
   }
 
   initWidgets() {
     const thisBooking = this;
-    this.peopleAmountWidget = new AmountWidget(this.dom.peopleAmount);
-    this.hoursAmountWidget = new AmountWidget(this.dom.hoursAmount);
+    this.peopleAmount = new AmountWidget(this.dom.peopleAmount);
+    this.hoursAmount = new AmountWidget(this.dom.hoursAmount);
     this.hourPicker = new HourPicker(this.dom.hourPicker);
     this.datePicker = new DatePicker(this.dom.datePicker);
     this.dom.wrapper.addEventListener('update', () => {
       this.updateDom();
     });
 
-    thisBooking.dom.hourPicker.addEventListener('updated', function (event) {
-      const clickedElement = thisBooking.dom.floorPlan.querySelector('.selected');
-
-
-      clickedElement.classList.remove(classNames.booking.tableBooked);
-      thisBooking.selectedTables = 0;
-
-      console.log(event);
+    thisBooking.dom.hourPicker.addEventListener('updated',
+      function () {
+        thisBooking.resetTables();
+      });
+    thisBooking.dom.floorPlan.addEventListener('click', function (event) {
+      thisBooking.initTables(event);
     });
 
+    this.dom.peopleAmount.addEventListener('updated', function () {
+      thisBooking.resetTables();
+
+    });
+    thisBooking.dom.hoursAmount.addEventListener('updated', function () {
+      thisBooking.resetTables();
+    });
+
+    thisBooking.dom.datePicker.addEventListener('updated', function () {
+      thisBooking.resetTables();
+
+    });
+    thisBooking.dom.wrapper.addEventListener('updated', function () {
+      thisBooking.updateDom();
+    });
     thisBooking.dom.floorPlan.addEventListener('click', function (event) {
       thisBooking.initTables(event);
     });
 
   }
+
 
   initTables(event) {
     const thisBooking = this;
@@ -139,15 +153,13 @@ export default class Booking {
 
       const tableId = clickedElement.getAttribute(settings.booking.tableIdAttribute);
 
-      if (this.selectedTables !== 0 && clickedElement.classList.contains(classNames.booking.tableSelected)) {
+      if (thisBooking.selectedTables !== 0 && clickedElement.classList.contains(classNames.booking.tableSelected)) {
 
         clickedElement.classList.remove(classNames.booking.tableBooked);
         thisBooking.selectedTables = 0;
-      }
-      else if (clickedElement.classList.contains(classNames.booking.tableBooked)) {
+      } else if (clickedElement.classList.contains(classNames.booking.tableBooked)) {
         alert('This table is unavailable');
-      }
-      else {
+      } else {
         for (let table of thisBooking.dom.tables) {
           if (table.classList.contains(classNames.booking.tableSelected)) {
 
@@ -159,8 +171,15 @@ export default class Booking {
         console.log('thisBooking.selectedTable', thisBooking.selectedTables);
       }
     }
-
   }
+
+  resetTables() {
+    const selectedTables = document.querySelectorAll(select.booking.selected);
+    selectedTables.forEach(table => {
+      table.classList.remove(classNames.booking.tableSelected);
+    });
+  }
+
 
   render(element) {
     this.dom = {};
