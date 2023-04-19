@@ -4,12 +4,14 @@ import HourPicker from './HourPicker.js';
 import DatePicker from './DatePicker.js';
 import utils from '../utils.js';
 
+
 export default class Booking {
   constructor(element) {
-    this.selectedTables = [];
+
     this.render(element);
     this.initWidgets();
     this.getData();
+
   }
 
   getData() {
@@ -82,8 +84,17 @@ export default class Booking {
   }
 
   updateDom() {
+
     this.date = this.datePicker.value;
     this.hour = utils.hourToNumber(this.hourPicker.value);
+
+
+    this.selectedTables = [];
+    const tables = this.dom.wrapper.querySelectorAll(select.booking.tables);
+    for (let table of tables) {
+      table.classList.remove(classNames.booking.tableSelected);
+    }
+
 
     const bookTime = this.booked[this.date][this.hour];
     let allAvailable = false;
@@ -171,13 +182,6 @@ export default class Booking {
         console.log('thisBooking.selectedTable', thisBooking.selectedTables);
       }
     }
-  }
-
-  resetTables() {
-    const selectedTables = document.querySelectorAll(select.booking.selected);
-    selectedTables.forEach(table => {
-      table.classList.remove(classNames.booking.tableSelected);
-    });
   }
 
 
