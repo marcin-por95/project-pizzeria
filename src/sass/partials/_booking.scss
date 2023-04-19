@@ -159,7 +159,7 @@
   
       &.booked {
         cursor: not-allowed;
-        color: lighten($color-dark, 40%);
+        color: lighten($color-dark, 15%);
   
         &::after {
           position: absolute;
@@ -169,11 +169,11 @@
           left: 0;
           top: 0;
           background: $color-dark;
-          opacity: 0.4;
+          opacity: 0.6;
         }
       }
       &.selected{
-        color: lighten($color-dark, 22%);
+        color: lighten($color-dark, 10%);
         cursor: pointer;
 
         &::after {
@@ -184,7 +184,7 @@
           left: 0;
           top: 0;
           background: $color-success;
-          opacity: 5%;
+          opacity: 70%;
         }
       }
     }
