@@ -1,4 +1,4 @@
-import {classNames, select, settings, templates} from '../settings.js';
+import { classNames, select, settings, templates } from '../settings.js';
 import AmountWidget from './AmountWidget.js';
 import HourPicker from './HourPicker.js';
 import DatePicker from './DatePicker.js';
@@ -10,6 +10,7 @@ export default class Booking {
 
     this.render(element);
     this.initWidgets();
+    this.addEventListeners();
     this.getData();
 
   }
@@ -24,7 +25,6 @@ export default class Booking {
       eventsCurrent: [settings.db.notRepeatParam, startDateParam, endDateParam],
       eventsRepeat: [settings.db.repeatParam, endDateParam]
     };
-    // console.log('getData', params);
 
     const urls = {
       bookings: settings.db.url + '/' + settings.db.booking + '?' + params.booking.join('&'),
@@ -32,7 +32,6 @@ export default class Booking {
       eventsRepeat: settings.db.url + '/' + settings.db.event + '?' + params.eventsRepeat.join('&'),
     };
 
-    //console.log('getData url',urls);
     Promise.all([fetch(urls.bookings), fetch(urls.eventsCurrent), fetch(urls.eventsRepeat),])
       .then(function (allResponses) {
         const bookingsResponse = allResponses[0];
@@ -42,8 +41,6 @@ export default class Booking {
         return Promise.all([bookingsResponse.json(), eventsCurrentResponse.json(), eventsRepeatResponse.json(),]);
       })
       .then(function ([bookings, eventsCurrent, eventsRepeat]) {
-        console.log(bookings);
-        console.log(eventsRepeat);
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
   }
@@ -108,7 +105,8 @@ export default class Booking {
       }
       if (!allAvailable && bookTime.includes(tableId) > false) {
         table.classList.add(classNames.booking.tableBooked);
-      } else {
+      }
+      else {
         table.classList.remove(classNames.booking.tableBooked);
       }
 
@@ -117,34 +115,16 @@ export default class Booking {
   }
 
   initWidgets() {
-    const thisBooking = this;
     this.peopleAmount = new AmountWidget(this.dom.peopleAmount);
     this.hoursAmount = new AmountWidget(this.dom.hoursAmount);
     this.hourPicker = new HourPicker(this.dom.hourPicker);
     this.datePicker = new DatePicker(this.dom.datePicker);
+  }
+
+  addEventListeners() {
+    const thisBooking = this;
     this.dom.wrapper.addEventListener('update', () => {
       this.updateDom();
-    });
-
-    thisBooking.dom.hourPicker.addEventListener('updated',
-      function () {
-        thisBooking.resetTables();
-      });
-    thisBooking.dom.floorPlan.addEventListener('click', function (event) {
-      thisBooking.initTables(event);
-    });
-
-    this.dom.peopleAmount.addEventListener('updated', function () {
-      thisBooking.resetTables();
-
-    });
-    thisBooking.dom.hoursAmount.addEventListener('updated', function () {
-      thisBooking.resetTables();
-    });
-
-    thisBooking.dom.datePicker.addEventListener('updated', function () {
-      thisBooking.resetTables();
-
     });
     thisBooking.dom.wrapper.addEventListener('updated', function () {
       thisBooking.updateDom();
@@ -152,9 +132,11 @@ export default class Booking {
     thisBooking.dom.floorPlan.addEventListener('click', function (event) {
       thisBooking.initTables(event);
     });
-
+    thisBooking.dom.submitButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      thisBooking.sendBooking();
+    });
   }
-
 
   initTables(event) {
     const thisBooking = this;
@@ -168,9 +150,11 @@ export default class Booking {
 
         clickedElement.classList.remove(classNames.booking.tableBooked);
         thisBooking.selectedTables = 0;
-      } else if (clickedElement.classList.contains(classNames.booking.tableBooked)) {
+      }
+      else if (clickedElement.classList.contains(classNames.booking.tableBooked)) {
         alert('This table is unavailable');
-      } else {
+      }
+      else {
         for (let table of thisBooking.dom.tables) {
           if (table.classList.contains(classNames.booking.tableSelected)) {
 
@@ -179,9 +163,39 @@ export default class Booking {
         }
         clickedElement.classList.add(classNames.booking.tableSelected);
         thisBooking.selectedTables = tableId;
-        console.log('thisBooking.selectedTable', thisBooking.selectedTables);
       }
     }
+  }
+
+  sendBooking() {
+
+    const formObject = {
+      date: this.date, // data wybrana w datePickerze
+      hour: utils.numberToHour(this.hour), // godzina wybrana w hourPickerze (w formacie HH:ss)
+      table: this.selectedTables.length === 0 ? null : this.selectedTables, //numer wybranego stolika (lub null jeśli nic nie wybrano)
+      duration: this.hoursAmount.value, //liczba godzin wybrana przez klienta
+      ppl: this.peopleAmount.value, //liczba osób wybrana przez klienta
+      starters: [
+        ...(this.dom.water.checked ? ['water'] : []),
+        ...(this.dom.bread.checked ? ['bread'] : []), //https://2ality.com/2017/04/conditional-literal-entries.html
+      ],
+      phone: this.dom.phone.value, // numer telefonu z formularza,
+      address: this.dom.address.value //adres z formularza
+    };
+    console.log(formObject);
+    const url = `${ settings.db.url }/${ settings.db.booking }`;
+    fetch(url, {
+      method: 'POST', body: JSON.stringify(formObject), headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(r => r.json())
+      .then(() => {
+        this.makeBooked(formObject.date, formObject.hour, formObject.duration, formObject.table);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+
   }
 
 
@@ -194,6 +208,11 @@ export default class Booking {
     this.dom.hourPicker = document.querySelector(select.widgets.hourPicker.wrapper);
     this.dom.datePicker = document.querySelector(select.widgets.datePicker.wrapper);
     this.dom.tables = document.querySelectorAll(select.booking.tables);
+    this.dom.submitButton = document.querySelector(select.booking.submitButton);
+    this.dom.phone = document.querySelector(select.booking.phone);
+    this.dom.address = document.querySelector(select.booking.address);
+    this.dom.water = document.querySelector(select.booking.water);
+    this.dom.bread = document.querySelector(select.booking.bread);
 
     this.dom.floorPlan = this.dom.wrapper.querySelector(select.booking.floorPlan);
   }
