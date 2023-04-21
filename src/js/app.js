@@ -2,8 +2,7 @@ import {settings, select, classNames} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
 import Booking from './components/Booking.js';
-
-
+import Home from './components/Home.js';
 
 
 const app = {
@@ -48,6 +47,8 @@ const app = {
     thisApp.initCart();
     thisApp.initPages();
     thisApp.initBooking();
+    thisApp.initHome();
+
 
   },
 
@@ -108,12 +109,43 @@ const app = {
     }
 
   },
+
   initBooking: function () {
     const thisApp = this;
 
     const widgetContainer = document.querySelector(select.containerOf.booking);
     thisApp.booking = new Booking(widgetContainer);
-  }
+  },
+
+  initHome: function(){
+
+    const homeContainer = document.querySelector(select.containerOf.home);
+    this.home = new Home(homeContainer);
+
+    // Select all links at home section using querySelectorAll
+    this.links = document.querySelectorAll(select.home.links);
+
+    for(let link of this.links){
+      // Find the closest ancestor element with .link class
+      const linkContainer = link.closest('.link');
+
+      if (linkContainer) {
+        linkContainer.addEventListener('click', function(event){
+          event.preventDefault();
+
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            // Create const to extract a part of string (1 mean first string for example booking)
+            const id = href.substring(1);
+            this.activatePage(id);
+            window.location.hash = '#/' + id;
+          } else {
+            window.location.href = href;
+          }
+        });
+      }
+    }
+  },
 
 };
 
