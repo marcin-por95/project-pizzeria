@@ -3,12 +3,15 @@ export const select = {
     menuProduct: '#template-menu-product',
     cartProduct: '#template-cart-product', // CODE ADDED
     bookingWidget: '#template-booking-widget',
+    homeWidget: '#template-home-product'
   },
   containerOf: {
     menu: '#product-list',
     cart: '#cart',
     pages: '#pages',
     booking: '.booking-wrapper',
+    home: '.home-wrapper',
+
   },
   all: {
     menuProducts: '#product-list > .product',
@@ -50,6 +53,10 @@ export const select = {
     address: '.order-confirmation [name="address"]',
     water: '[name="water"]',
     bread: '[name="bread"]',
+  },
+  home: {
+    carouselPlugin: '.main-carousel',
+    links: '.links a',
   },
   nav: {
     links: '.main-nav a',
@@ -123,7 +130,7 @@ export const settings = {
   },
   // CODE ADDED END
   db: {
-    url: '//localhost:3131',
+    url: '//' + window.location.hostname + (window.location.hostname=='localhost' ? ':3131' : ''),
     products: 'products',
     orders: 'orders',
     booking: 'bookings',
@@ -137,9 +144,15 @@ export const settings = {
 };
 
 export const templates = {
-  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
+  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML
+  ),
   // CODE ADDED START
-  cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
+  cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML
+  ),
   // CODE ADDED END
-  bookingWidget: Handlebars.compile(document.querySelector(select.templateOf.bookingWidget).innerHTML),
+  bookingWidget: Handlebars.compile(document.querySelector(select.templateOf.bookingWidget).innerHTML
+  ),
+  //home templates
+  homeWidget: Handlebars.compile(document.querySelector(select.templateOf.homeWidget).innerHTML
+  ),
 };
