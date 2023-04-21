@@ -107,7 +107,6 @@ const app = {
         classNames.nav.active,
         link.getAttribute('href') === '#' + pageId);
     }
-
   },
 
   initBooking: function () {
