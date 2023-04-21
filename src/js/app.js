@@ -14,22 +14,18 @@ const app = {
       new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
     }
   },
-  initData: function () {
+  initData: function(){
     const thisApp = this;
-    const url = settings.db.url + '/' + settings.db.products;
     thisApp.data = {};
+    const url = settings.db.url + '/' + settings.db.products;
     fetch(url)
-      .then(function (rawResponse) {
+      .then(function(rawResponse){
         return rawResponse.json();
       })
-      .then(function (parsedResponse) {
-        console.log('parsedResponse', parsedResponse);
-        /* save parsedResponse as thisApp.data.products */
+      .then(function(parsedResponse){
         thisApp.data.products = parsedResponse;
-        /* execute initMenu method */
         thisApp.initMenu();
       });
-    console.log('thisApp.data', JSON.stringify(thisApp.data));
   },
   initCart: function () {
     const thisApp = this;
